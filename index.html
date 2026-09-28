@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>要不要跟我去走走？</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap');
+:root{
+  --ink:#51485d; --muted:#91879d; --purple:#9b78c8; --pink:#dba8c9;
+  --line:#eee5f2; --white:#fff; --shadow:0 28px 70px rgba(93,65,108,.16);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Noto Sans TC",sans-serif;color:var(--ink)}
+body{
+  min-height:100vh; overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(255,255,255,.7) 0 7%,transparent 25%),
+    radial-gradient(circle at 88% 82%,rgba(255,255,255,.5) 0 8%,transparent 28%),
+    linear-gradient(135deg,#f6eafa 0%,#eee3fa 43%,#f9e6ef 100%);
+}
+#app{min-height:100vh;display:grid;place-items:center;padding:24px;position:relative}
+.decor{position:fixed;pointer-events:none;user-select:none;filter:drop-shadow(0 8px 12px rgba(95,69,110,.1))}
+.dog{font-size:62px;animation:float 4s ease-in-out infinite}
+.d1{left:4vw;top:9vh}.d2{right:5vw;bottom:10vh;font-size:54px;animation-delay:-1.2s}.spark{font-size:28px}
+.s1{left:10vw;bottom:18vh}.s2{right:13vw;top:12vh}
+@keyframes float{50%{transform:translateY(-10px) rotate(2deg)}}
+.card{
+  width:min(760px,94vw); min-height:min(690px,88vh); max-height:90vh;
+  background:rgba(255,255,255,.94); border:1px solid rgba(255,255,255,.9);
+  border-radius:34px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  backdrop-filter:blur(14px);
+}
+.card:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.65),transparent 35%)}
+.top{padding:26px 34px 0;position:relative;z-index:2}
+.progress{display:flex;gap:7px;justify-content:center;margin-bottom:20px}
+.dot{height:5px;width:42px;border-radius:99px;background:#eadff0;transition:.35s}
+.dot.active{background:linear-gradient(90deg,var(--purple),var(--pink))}
+.content{position:relative;z-index:2;padding:8px 52px 42px;min-height:570px;display:flex;align-items:center;justify-content:center}
+.step{display:none;width:100%;animation:in .45s ease}
+.step.active{display:block}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.kicker{text-align:center;color:#aa91bd;font-size:13px;letter-spacing:.18em;margin-bottom:13px}
+h1{font-family:"Playfair Display","Noto Sans TC",serif;text-align:center;font-size:clamp(30px,5vw,46px);line-height:1.25;margin:0 0 13px;color:#514258}
+.lead{text-align:center;color:var(--muted);font-size:15px;margin:0 auto 28px;line-height:1.8}
+.paw{font-size:46px;text-align:center;margin-bottom:18px}
+.actions{display:flex;justify-content:center;gap:14px;align-items:center;position:relative;min-height:150px}
+button,.date-input,textarea{
+  font:inherit
+}
+.btn{
+  border:0;border-radius:999px;padding:13px 26px;cursor:pointer;transition:transform .22s,box-shadow .22s,background .22s;
+  font-weight:600;letter-spacing:.04em
+}
+.btn.yes{background:linear-gradient(135deg,#a983ce,#d59bc2);color:#fff;box-shadow:0 12px 28px rgba(155,120,200,.25);font-size:17px}
+.btn.yes:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(155,120,200,.32)}
+.btn.no{background:#f5f0f7;color:#8e8297;position:absolute;transition:left .18s ease,top .18s ease,transform .18s ease}
+.hint{text-align:center;color:#b1a6b8;font-size:12px;margin-top:12px}
+.field-label{display:block;text-align:center;font-size:14px;color:#7c7087;margin-bottom:10px}
+.date-wrap{text-align:center}
+.date-input{border:1px solid var(--line);background:#fcfaff;color:var(--ink);border-radius:18px;padding:15px 18px;width:min(330px,100%);outline:none;box-shadow:inset 0 1px 3px rgba(90,70,100,.03)}
+.date-input:focus,textarea:focus{border-color:#c4a5d5;box-shadow:0 0 0 4px rgba(173,136,199,.11)}
+.center-btn{display:flex;justify-content:center;margin-top:24px}
+.food-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.food{
+  border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px 10px;text-align:center;cursor:pointer;color:#695e72;transition:.2s;
+}
+.food span{display:block;font-size:25px;margin-bottom:5px}
+.food.selected{border-color:#b895cb;background:#fbf5ff;box-shadow:0 7px 20px rgba(155,120,200,.13);transform:translateY(-2px);color:#704d80}
+textarea{width:100%;height:82px;resize:none;border:1px solid var(--line);border-radius:18px;padding:13px 15px;outline:none;background:#fcfaff;color:var(--ink)}
+.submit-msg{text-align:center;font-size:13px;color:#8d8095;margin-top:12px;min-height:20px}
+.letter{
+  max-width:550px;margin:0 auto;background:#fffafc;border:1px solid #f0e2ea;border-radius:24px;padding:28px 30px;
+  box-shadow:0 15px 35px rgba(110,76,100,.08);position:relative
+}
+.letter:after{content:"♡";position:absolute;right:20px;top:15px;color:#d7a8c5;font-size:26px}
+.letter p{line-height:2;margin:0 0 12px;font-size:15px}
+.sign{text-align:right;color:#9b7c9f;font-weight:600;margin-top:18px}
+.restart{display:flex;justify-content:center;margin-top:20px}
+.btn.secondary{background:#f5eef8;color:#765d82}
+.small{font-size:12px;color:#aa9eaf;text-align:center;margin-top:12px;line-height:1.7}
+@media(max-width:620px){
+  .card{min-height:650px;border-radius:27px}.content{padding:8px 22px 30px;min-height:540px}.top{padding:20px 20px 0}
+  .food-grid{grid-template-columns:repeat(2,1fr)}.dog{font-size:42px}.d1{left:2vw}.d2{right:2vw}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="decor dog d1">🐶</div><div class="decor dog d2">🐕</div>
+  <div class="decor spark s1">✦</div><div class="decor spark s2">✧</div>
+  <main class="card">
+    <div class="top">
+      <div class="progress" aria-label="進度">
+        <i class="dot active"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i>
+      </div>
+    </div>
+    <div class="content">
+      <section class="step active" data-step="1">
+        <div class="paw">🐾</div>
+        <div class="kicker">A LITTLE INVITATION</div>
+        <h1>要不要跟我去走走？</h1>
+        <p class="lead">沒有特別的理由，只是想和你一起<br>散散步、吃點好吃的，留下一個可愛的下午。</p>
+        <div class="actions" id="actions">
+          <button class="btn yes" id="yesBtn">好哦 ♡</button>
+          <button class="btn no" id="noBtn">NO</button>
+        </div>
+        <div class="hint">（小心一點，NO 好像有自己的想法。）</div>
+      </section>
+
+      <section class="step" data-step="2">
+        <div class="paw">🗓️</div>
+        <div class="kicker">STEP TWO</div>
+        <h1>那就挑一天吧</h1>
+        <p class="lead">選一個你覺得舒服、適合出門的日子。</p>
+        <div class="date-wrap">
+          <label class="field-label" for="date">我們的約會日期</label>
+          <input class="date-input" id="date" type="date">
+        </div>
+        <div class="center-btn"><button class="btn yes" id="dateBtn">就這天！ ✨</button></div>
+        <div class="submit-msg" id="dateMsg"></div>
+      </section>
+
+      <section class="step" data-step="3">
+        <div class="paw">🍜</div>
+        <div class="kicker">STEP THREE</div>
+        <h1>那天想吃什麼？</h1>
+        <p class="lead">可以複選，想吃什麼就全部告訴我。</p>
+        <div class="food-grid">
+          <button class="food" data-food="火鍋"><span>🍲</span>火鍋</button>
+          <button class="food" data-food="牛肉麵"><span>🍜</span>牛肉麵</button>
+          <button class="food" data-food="滷肉飯"><span>🍚</span>滷肉飯</button>
+          <button class="food" data-food="夜市小吃"><span>🍢</span>夜市小吃</button>
+          <button class="food" data-food="烤肉"><span>🥩</span>烤肉</button>
+          <button class="food" data-food="拉麵"><span>🍥</span>拉麵</button>
+        </div>
+        <textarea id="other" placeholder="還有其他想吃的嗎？寫在這裡吧 ♡"></textarea>
+        <div class="center-btn"><button class="btn yes" id="finishBtn">就決定這個！ 💌</button></div>
+        <div class="submit-msg" id="foodMsg"></div>
+      </section>
+
+      <section class="step" data-step="4">
+        <div class="paw">💌</div>
+        <div class="kicker">A LITTLE NOTE FOR YOU</div>
+        <h1>給你的一封小信</h1>
+        <div class="letter">
+          <p>嗨，</p>
+          <p>謝謝你願意陪我走一段路。</p>
+          <p>日期是你選的，想吃的也是你挑的；剩下的，就交給我準備一點點驚喜。</p>
+          <p>希望那一天，我們不用趕著去哪裡，只要一起吃飯、散步、聊天，偶爾看看路邊的小狗，就很好了。</p>
+          <p>那麼，到時候見。♡</p>
+          <div class="sign">— 智安</div>
+        </div>
+        <div class="restart"><button class="btn secondary" id="restartBtn">再看一次 ↺</button></div>
+        <div class="small" id="sentMsg">正在準備把你選的答案偷偷寄到信箱……</div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+const steps=[...document.querySelectorAll('.step')];
+const dots=[...document.querySelectorAll('.dot')];
+const yes=document.getElementById('yesBtn');
+const no=document.getElementById('noBtn');
+const actions=document.getElementById('actions');
+const date=document.getElementById('date');
+const selectedFoods=new Set();
+let noRuns=0;
+
+function showStep(n){
+  steps.forEach(s=>s.classList.toggle('active',Number(s.dataset.step)===n));
+  dots.forEach((d,i)=>d.classList.toggle('active',i<n));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function moveNo(){
+  const box=actions.getBoundingClientRect();
+  const bw=no.offsetWidth, bh=no.offsetHeight;
+  const pad=8;
+  const x=Math.max(pad,Math.random()*(box.width-bw-pad*2));
+  const y=Math.max(pad,Math.random()*(box.height-bh-pad*2));
+  no.style.left=x+'px'; no.style.top=y+'px';
+  no.style.transform=`rotate(${(Math.random()*16-8).toFixed(1)}deg)`;
+  noRuns++;
+  yes.style.transform=`scale(${Math.min(1.7,1+noRuns*.08)})`;
+}
+no.addEventListener('mouseenter',moveNo);
+no.addEventListener('pointerdown',e=>{e.preventDefault();moveNo()});
+no.addEventListener('touchstart',e=>{e.preventDefault();moveNo()},{passive:false});
+yes.addEventListener('click',()=>showStep(2));
+
+const now=new Date();
+const yyyy=now.getFullYear(), mm=String(now.getMonth()+1).padStart(2,'0'), dd=String(now.getDate()).padStart(2,'0');
+date.min=`${yyyy}-${mm}-${dd}`;
+
+document.getElementById('dateBtn').addEventListener('click',()=>{
+  const msg=document.getElementById('dateMsg');
+  if(!date.value){msg.textContent='先選一個日子嘛 ♡';return}
+  msg.textContent='';
+  showStep(3);
+});
+document.querySelectorAll('.food').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f=btn.dataset.food;
+    selectedFoods.has(f)?selectedFoods.delete(f):selectedFoods.add(f);
+    btn.classList.toggle('selected',selectedFoods.has(f));
+  });
+});
+
+async function sendAnswers(){
+  const foods=[...selectedFoods];
+  const other=document.getElementById('other').value.trim();
+  const foodText=foods.concat(other?`其他：${other}`:[]).join('、')||'（沒有選擇）';
+  const payload={
+    _subject:'有人答應一起去走走了 ♡',
+    _template:'table',
+    _captcha:'true',
+    date:date.value,
+    food:foodText,
+    message:'網站互動問卷完成！'
+  };
+  try{
+    const res=await fetch('https://formsubmit.co/ajax/zhian0310@gmail.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json().catch(()=>({success:false}));
+    return res.ok && (data.success===true || data.success==='true');
+  }catch(e){return false}
+}
+document.getElementById('finishBtn').addEventListener('click',async()=>{
+  const msg=document.getElementById('foodMsg');
+  if(selectedFoods.size===0 && !document.getElementById('other').value.trim()){
+    msg.textContent='至少告訴我一個想吃的吧 ♡';return;
+  }
+  msg.textContent='正在偷偷寄出答案……';
+  const ok=await sendAnswers();
+  showStep(4);
+  document.getElementById('sentMsg').textContent=ok
+    ?'好了 ♡ 你選的日期和食物已經寄到信箱。'
+    :'信件服務目前沒有回覆，但你的選擇已經記在這一頁；請確認網站已部署在網路伺服器上，且第一次使用 FormSubmit 時已完成信箱啟用。';
+});
+document.getElementById('restartBtn').addEventListener('click',()=>{
+  selectedFoods.clear();
+  document.querySelectorAll('.food').forEach(b=>b.classList.remove('selected'));
+  date.value='';
+  document.getElementById('other').value='';
+  noRuns=0; yes.style.transform='scale(1)';
+  no.style.left='50%';no.style.top='50%';no.style.transform='translate(-50%,-50%)';
+  showStep(1);
+});
+no.style.left='72%'; no.style.top='50%'; no.style.transform='translate(-50%,-50%)';
+</script>
+</body>
+</html>
